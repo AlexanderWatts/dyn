@@ -16,6 +16,11 @@ public class Dyn {
 		}
 	}
 
+	/**
+	 * Run dyn from file
+	 *
+	 * @throws IOException
+	 */
 	private static void runFile(String path) throws IOException {
 		byte[] bytes = Files.readAllBytes(Paths.get(path));
 		String source = new String(bytes, Charset.defaultCharset());
