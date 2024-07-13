@@ -5,6 +5,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import scanner.Scanner;
+
 public class Dyn {
 	public static void main(String[] args) throws IOException {
 		if (args.length > 1) {
@@ -25,8 +27,7 @@ public class Dyn {
 		byte[] bytes = Files.readAllBytes(Paths.get(path));
 		String source = new String(bytes, Charset.defaultCharset());
 
-		System.out.println("Output:");
-		System.out.println(source);
+		run(source);
 	}
 
 	/**
@@ -51,7 +52,13 @@ public class Dyn {
 			if (line == null) {
 				break;
 			}
+
+			run(line);
 		}
+	}
+
+	private static void run(String source) {
+		Scanner scanner = new Scanner(source);
 	}
 }
 
