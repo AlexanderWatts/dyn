@@ -4,8 +4,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import scanner.Scanner;
+import token.Token;
 
 public class Dyn {
 	public static void main(String[] args) throws IOException {
@@ -59,6 +61,9 @@ public class Dyn {
 
 	private static void run(String source) {
 		Scanner scanner = new Scanner(source);
+		List<Token> tokens = scanner.scan();
+
+		scanner.printTokens();
 	}
 }
 
