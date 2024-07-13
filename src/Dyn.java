@@ -10,6 +10,8 @@ import scanner.Scanner;
 import token.Token;
 
 public class Dyn {
+	private static boolean hadError = false;
+
 	public static void main(String[] args) throws IOException {
 		if (args.length > 1) {
 			System.exit(64);
@@ -30,6 +32,10 @@ public class Dyn {
 		String source = new String(bytes, Charset.defaultCharset());
 
 		run(source);
+
+		if (hadError) {
+			System.exit(65);
+		}
 	}
 
 	/**
@@ -64,6 +70,16 @@ public class Dyn {
 		List<Token> tokens = scanner.scan();
 
 		scanner.printTokens();
+	}
+
+	public static void error(int line, String message) {
+		report(line, "", message);	
+	}
+
+	private static void report(int line, String where, String message) {
+		System.err.println("[line ]" + line + "] Error " + where + ": " + message);
+
+		hadError = true;
 	}
 }
 
