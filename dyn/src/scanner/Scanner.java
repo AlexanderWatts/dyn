@@ -19,9 +19,30 @@ public class Scanner {
 	}
 
 	public List<Token> scan() {
-		Dyn.error(line, "Houston we have a problem!");
+		while(!isAtEndOfFile()) {
+			start = current;
+
+			analyseCharacter();
+		}
+
 		addToken(TokenType.EOF);
 		return tokens;
+	}
+
+	private void analyseCharacter() {
+		char currentCharacter = getCurrentCharacterAndAdvance();
+
+		switch (currentCharacter) {
+			default: break;
+		}
+	}
+
+	private char getCurrentCharacterAndAdvance() {
+		return source.charAt(current++);
+	}
+
+	private boolean isAtEndOfFile() {
+		return current >= source.length();	
 	}
 
 	public void printTokens() {
