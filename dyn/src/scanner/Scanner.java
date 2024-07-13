@@ -43,10 +43,58 @@ public class Scanner {
 			case '+': addToken(TokenType.PLUS); break;
 			case '-': addToken(TokenType.MINUS); break;
 			case ';': addToken(TokenType.SEMICOLON); break;
+			case '=':
+				addToken(matchAndAdvance('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+			break;
+			case '!': {
+				addToken(matchAndAdvance('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+				break;
+			}
+			case '<': {
+				addToken(matchAndAdvance('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
+				break;
+			}
+			case '>': {
+				addToken(matchAndAdvance('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+				break;
+			}
+			case '/': {
+				if (matchAndAdvance('/')) {
+					while (getCurrentCharacter() != '\n' && !isAtEndOfFile()) {
+						getCurrentCharacterAndAdvance();
+					}
+				} else {
+					addToken(TokenType.SLASH);
+				}
+
+				break;
+			}
 			default: 
 				Dyn.error(line, "Unexpected character");
 			break;
 		}
+	}
+
+	private char getCurrentCharacter() {
+		if (isAtEndOfFile()) {
+			return ';';
+		}
+
+		return source.charAt(current);
+	}
+
+	
+	private boolean matchAndAdvance(char expectedCharacter) {
+		if (isAtEndOfFile()) {
+			return false;
+		}
+
+		if (source.charAt(current) != expectedCharacter) {
+			return false;
+		}
+
+		current++;
+		return true;
 	}
 
 	private char getCurrentCharacterAndAdvance() {
