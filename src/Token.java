@@ -1,4 +1,3 @@
-package token;
 
 public class Token {
 	private final TokenType type;
