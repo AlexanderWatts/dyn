@@ -73,9 +73,10 @@ public class Scanner {
 				line++;
 				break;
 			}
-			default: 
+			default: { 
 				Dyn.error(line, "Unexpected character");
-			break;
+				break;
+			}
 		}
 	}
 
