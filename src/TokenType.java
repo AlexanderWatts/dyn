@@ -1,4 +1,3 @@
-package src.token;
 
 /**
  * All the avaliable token types for dyn

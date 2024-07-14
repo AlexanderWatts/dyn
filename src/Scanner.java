@@ -1,11 +1,5 @@
-package src.scanner;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import src.Dyn;
-import src.token.TokenType;
-import src.token.Token;
 
 public class Scanner {
 	private List<Token> tokens = new ArrayList<>();

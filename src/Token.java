@@ -1,4 +1,3 @@
-package src.token;
 
 public class Token {
 	private final TokenType type;
