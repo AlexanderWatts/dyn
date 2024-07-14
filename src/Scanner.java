@@ -63,6 +63,15 @@ public class Scanner {
 
 				break;
 			}
+			case ' ':
+			case '\t':
+			case '\r': {
+				break;
+			}
+			case '\n': {
+				line++;
+				break;
+			}
 			default: 
 				Dyn.error(line, "Unexpected character");
 			break;
