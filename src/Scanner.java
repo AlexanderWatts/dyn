@@ -74,16 +74,37 @@ public class Scanner {
 				break;
 			}
 			default: { 
-				Dyn.error(line, "Unexpected character");
-				break;
+				if (isNumeric(currentCharacter)) {
+					while (isNumeric(getCurrentCharacter())) {
+						getCurrentCharacterAndAdvance();	
+					}
+
+					if (getCurrentCharacter() == '.' && isNumeric(getNextCharacter())) {
+						getCurrentCharacterAndAdvance();
+
+						while (isNumeric(getCurrentCharacter())) {
+							getCurrentCharacterAndAdvance();	
+						}
+					}
+
+					Double number = Double.parseDouble(source.substring(start, current));
+					addToken(TokenType.NUMBER, number);
+				} else {
+					Dyn.error(line, "Unexpected character");
+					break;
+				}
 			}
 		}
+	}
+
+	private boolean isNumeric(char currentCharacter) {
+		return currentCharacter > '0' && currentCharacter < '9'; 
 	}
 
 	private void string() {
 		while (getCurrentCharacter() != '"' && !isAtEndOfFile()) {
 			if (getCurrentCharacter() == '\n') {
-				line++;		
+				line++;	
 			}
 
 			getCurrentCharacterAndAdvance();
@@ -100,9 +121,17 @@ public class Scanner {
 		addToken(TokenType.STRING, literal);
 	}
 
+	private char getNextCharacter() {
+		if (current + 1 >= source.length()) {
+			return '\0';
+		}
+
+		return source.charAt(current + 1);
+	}
+
 	private char getCurrentCharacter() {
 		if (isAtEndOfFile()) {
-			return ';';
+			return '\0';
 		}
 
 		return source.charAt(current);
