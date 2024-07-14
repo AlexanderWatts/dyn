@@ -52,6 +52,7 @@ public class Scanner {
 				addToken(matchAndAdvance('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
 				break;
 			}
+			case '"': string(); break;
 			case '/': {
 				if (matchAndAdvance('/')) {
 					while (getCurrentCharacter() != '\n' && !isAtEndOfFile()) {
@@ -76,6 +77,26 @@ public class Scanner {
 				Dyn.error(line, "Unexpected character");
 			break;
 		}
+	}
+
+	private void string() {
+		while (getCurrentCharacter() != '"' && !isAtEndOfFile()) {
+			if (getCurrentCharacter() == '\n') {
+				line++;		
+			}
+
+			getCurrentCharacterAndAdvance();
+		}
+
+		if (isAtEndOfFile()) {
+			Dyn.error(line, "Unterminated string");
+			return;
+		}
+
+		getCurrentCharacterAndAdvance();
+
+		String literal = source.substring(start + 1, current - 1);
+		addToken(TokenType.STRING, literal);
 	}
 
 	private char getCurrentCharacter() {
