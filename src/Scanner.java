@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Scanner {
@@ -7,6 +8,27 @@ public class Scanner {
 	private int start = 0;
 	private int current = 0;
 	private int line = 1;
+	private static final HashMap<String, TokenType> keywords;
+
+	static {
+		keywords = new HashMap<>();
+		keywords.put("var", TokenType.VAR);
+		keywords.put("and", TokenType.AND);
+		keywords.put("class", TokenType.CLASS);
+		keywords.put("else", TokenType.ELSE);
+		keywords.put("false", TokenType.FALSE);
+		keywords.put("fun", TokenType.FUN);
+		keywords.put("for", TokenType.FOR);
+		keywords.put("if", TokenType.IF);
+		keywords.put("nil", TokenType.NIL);
+		keywords.put("or", TokenType.OR);
+		keywords.put("print", TokenType.PRINT);
+		keywords.put("return", TokenType.RETURN);
+		keywords.put("super", TokenType.SUPER);
+		keywords.put("this", TokenType.THIS);
+		keywords.put("true", TokenType.TRUE);
+		keywords.put("while", TokenType.WHILE);
+	}
 
 	public Scanner(String source) {
 		this.source = source;
@@ -89,6 +111,23 @@ public class Scanner {
 
 					Double number = Double.parseDouble(source.substring(start, current));
 					addToken(TokenType.NUMBER, number);
+					break;
+				} else if (isAlpha(currentCharacter)) {
+					while (isAlphaNumeric(getNextCharacter())) {
+						getCurrentCharacterAndAdvance();
+					}
+
+					getCurrentCharacterAndAdvance();
+
+					String content = source.substring(start, current);
+					TokenType type = keywords.get(content);
+
+					if (type == null) {
+						type = TokenType.IDENTIFIER;
+					}
+
+					addToken(type);
+					break;
 				} else {
 					Dyn.error(line, "Unexpected character");
 					break;
@@ -97,8 +136,18 @@ public class Scanner {
 		}
 	}
 
+	private boolean isAlphaNumeric(char currentCharacter) {
+		return isAlpha(currentCharacter) || isNumeric(currentCharacter);
+	}
+
+	private boolean isAlpha(char currentCharacter) {
+		return (currentCharacter >= 'A' && currentCharacter <= 'Z') ||
+			(currentCharacter >= 'a' && currentCharacter <= 'z') ||
+			currentCharacter == '_';
+	}
+
 	private boolean isNumeric(char currentCharacter) {
-		return currentCharacter > '0' && currentCharacter < '9'; 
+		return currentCharacter >= '0' && currentCharacter <= '9'; 
 	}
 
 	private void string() {
