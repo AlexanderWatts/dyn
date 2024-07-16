@@ -78,5 +78,33 @@ public class Dyn {
 
 		hadError = true;
 	}
+
+	private static void astPrinterTest() {
+		Expr.Literal literal = new Expr.Literal(123);
+
+		Expr.Grouping grouping = new Expr.Grouping(new Expr.Literal("Hello"));
+
+		Expr.Unary unary = new Expr.Unary(
+			new Token(TokenType.BANG, "!", null, 1),
+			new Expr.Literal(true)
+		);
+		
+		Expr.Binary binary = new Expr.Binary(
+			new Expr.Binary(
+				new Expr.Literal(1),
+				new Token(TokenType.MINUS, "-", null, 1),
+				new Expr.Literal(1)
+			),
+			new Token(TokenType.PLUS, "+", null, 1),
+			new Expr.Literal(2)
+		);
+
+		AstPrinter astPrinter = new AstPrinter();
+
+		System.out.println(astPrinter.print(literal));
+		System.out.println(astPrinter.print(binary));
+		System.out.println(astPrinter.print(grouping));
+		System.out.println(astPrinter.print(unary));
+	}
 }
 

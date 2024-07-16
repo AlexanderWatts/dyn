@@ -1,6 +1,18 @@
 # dyn
 A DYNamically typed general purpose language
 
+## Context-free grammar
+
+The following context-free grammar describes the Dyn language and is used as a guide to build
+the parser. It will be updated and improved as more features are added
+
+expression = literal | unary | binary | grouping ;
+literal = NUMBER | STRING | "true" | "false" | "nil" ;
+grouping = "(" expression ")" ;
+unary = ( "-" | "!") expression ;
+binary = expression operator expression ;
+operator = "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ;
+
 ## Running dyn
 
 Dyn can be run from file or through REPL/prompt
@@ -15,6 +27,11 @@ REPL:
 
 ```bash
 java ./src/Dyn.java
+```
+
+Generate Expr class which creates ./src/Expr.java file
+```bash
+java ./tools/GenerateAst.java
 ```
 
 ## Scanning/Lexical analysis
