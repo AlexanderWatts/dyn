@@ -10,7 +10,29 @@ public class Parser {
 
 	public Expr parse() {
 		System.out.println("Parsing...");
-		return term();
+		return comparison();
+	}
+
+	/**
+	 * Grammar production
+	 * comparison = term (("<" | "<=" | ">=" | ">") term)* ;
+	 */
+	private Expr comparison() {
+		Expr expr = term();
+
+		if (isCurrentToken(
+			TokenType.LESS,
+			TokenType.LESS_EQUAL,
+			TokenType.GREATER_EQUAL,
+			TokenType.GREATER
+		)) {
+			Token operator = getCurrentTokenAndAdvance();
+			Expr right = term();
+
+			return new Expr.Binary(expr, operator, right);
+		}
+
+		return expr;
 	}
 
 	/**
