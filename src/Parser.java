@@ -10,6 +10,10 @@ public class Parser {
 
 	public Expr parse() {
 		System.out.println("Parsing...");
+		return expression();
+	}
+
+	public Expr expression() {
 		return equality();
 	}
 
@@ -131,6 +135,18 @@ public class Parser {
 			getCurrentTokenAndAdvance();
 
 			return literal;
+		}
+		
+		if (isCurrentToken(TokenType.LEFT_PAREN)) {
+			getCurrentTokenAndAdvance();
+
+			Expr expression = expression();
+
+			if (getCurrentToken().getType() != TokenType.RIGHT_PAREN) {
+				throw new Error("Missing ')'");
+			}
+
+			return new Expr.Grouping(expression);
 		}
 
 		return new Expr.Literal(null);
