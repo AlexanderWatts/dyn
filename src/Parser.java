@@ -10,7 +10,24 @@ public class Parser {
 
 	public Expr parse() {
 		System.out.println("Parsing...");
-		return unary();
+		return factor();
+	}
+
+	/**
+	 * Grammar production
+	 * factor = unary (("*" | "/") unary)* ;
+	 */
+	private Expr factor() {
+		Expr unary = unary();
+
+		if (isCurrentToken(TokenType.STAR, TokenType.SLASH)) {
+			Token operator = getCurrentTokenAndAdvance();	
+			Expr right = unary();
+
+			return new Expr.Binary(unary, operator, right);
+		}
+
+		return unary;
 	}
 
 	/**
@@ -19,10 +36,7 @@ public class Parser {
 	 */
 	private Expr unary() {
 		if (isCurrentToken(TokenType.MINUS, TokenType.BANG)) {
-			Token operator = getCurrentToken();
-			System.out.println("operator" + operator);
-			getCurrentTokenAndAdvance();
-
+			Token operator = getCurrentTokenAndAdvance();
 			Expr right = unary();
 			
 			return new Expr.Unary(operator, right);
@@ -37,8 +51,7 @@ public class Parser {
 	 */
 	private Expr primary() {
 		if (isCurrentToken(TokenType.STRING) || isCurrentToken(TokenType.NUMBER)) {
-			Expr literal = new Expr.Literal(getCurrentToken().getLiteral());
-			getCurrentTokenAndAdvance();
+			Expr literal = new Expr.Literal(getCurrentTokenAndAdvance().getLiteral());
 
 			return literal;
 		}
