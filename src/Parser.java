@@ -10,7 +10,24 @@ public class Parser {
 
 	public Expr parse() {
 		System.out.println("Parsing...");
-		return factor();
+		return term();
+	}
+
+	/**
+	 * Grammar production
+	 * term = factor (("+" | "-") factor)* ;
+	 */
+	private Expr term() {
+		Expr expr = factor();
+
+		if (isCurrentToken(TokenType.PLUS, TokenType.MINUS)) {
+			Token operator = getCurrentTokenAndAdvance();
+			Expr right = factor();
+
+			return new Expr.Binary(expr, operator, right);
+		}
+		
+		return expr;
 	}
 
 	/**
