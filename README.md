@@ -6,12 +6,15 @@ A DYNamically typed general purpose language
 The following context-free grammar describes the Dyn language and is used as a guide to build
 the parser. It will be updated and improved as more features are added
 
-expression = literal | unary | binary | grouping ;
-literal = NUMBER | STRING | "true" | "false" | "nil" ;
-grouping = "(" expression ")" ;
-unary = ( "-" | "!") expression ;
-binary = expression operator expression ;
-operator = "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ;
+```
+expression = equality ;
+equality = comparison (("==" | "!=") comparison )* ;
+comparison = term (("<" | "<=" | ">=" | ">") term )* ;
+term = factor (("-" | "+") factor )* ;
+factor = unary (("*" | "/") unary )* ;
+unary = ("-" | "!") unary | primary ;
+primary = number | string | "true" | "false" | "nil" | "(" expression ")" ;
+```
 
 ## Running dyn
 
