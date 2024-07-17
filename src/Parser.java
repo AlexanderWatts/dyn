@@ -10,7 +10,24 @@ public class Parser {
 
 	public Expr parse() {
 		System.out.println("Parsing...");
-		return comparison();
+		return equality();
+	}
+
+	/**
+	 * Grammar production
+	 * equality = comparison (("==" | "!=") comparison)* ;
+	 */
+	private Expr equality() {
+		Expr expr = comparison();
+
+		if (isCurrentToken(TokenType.EQUAL_EQUAL, TokenType.BANG_EQUAL)) {
+			Token operator = getCurrentTokenAndAdvance();
+			Expr right = comparison();
+
+			return new Expr.Binary(expr, operator, right);
+		}
+
+		return expr;
 	}
 
 	/**
