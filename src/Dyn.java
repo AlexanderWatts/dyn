@@ -67,6 +67,9 @@ public class Dyn {
 		List<Token> tokens = scanner.scan();
 
 		scanner.printTokens();
+		
+		Parser parser = new Parser(tokens);
+		parser.parse();
 	}
 
 	public static void error(int line, String message) {
