@@ -69,9 +69,11 @@ public class Dyn {
 		scanner.printTokens();
 
 		Parser parser = new Parser(tokens);
-		Expr root = parser.parse();
+		List<Expr> expressions = parser.parse();
 
-		System.out.println(new AstPrinter().print(root));
+		for (Expr expr : expressions) {
+			System.out.println(new AstPrinter().print(expr));
+		}
 	}
 
 	public static void error(int line, String message) {

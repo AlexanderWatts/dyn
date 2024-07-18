@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
@@ -8,9 +9,18 @@ public class Parser {
 		this.tokens = tokens;
 	}
 
-	public Expr parse() {
+	public List<Expr> parse() {
 		System.out.println("Parsing...");
-		return expression();
+
+		List<Expr> expressions = new ArrayList<>();
+
+		while (!hasSeenAllTokens()) {
+			expressions.add(expression());
+		}
+	
+		System.out.println("last token looked at " + (current + 1) + " " + tokens.get(current));
+
+		return expressions;
 	}
 
 	public Expr expression() {
@@ -142,14 +152,18 @@ public class Parser {
 
 			Expr expression = expression();
 
+			System.out.println("After " + getCurrentToken());
+
 			if (getCurrentToken().getType() != TokenType.RIGHT_PAREN) {
-				throw new Error("Missing ')'");
+				throw new Error("Expect ')' after expression");
 			}
 
+			getCurrentTokenAndAdvance();
 			return new Expr.Grouping(expression);
 		}
 
-		return new Expr.Literal(null);
+		getCurrentTokenAndAdvance();
+		throw new Error("Expect expression");
 	}
 
 	private boolean isCurrentToken(TokenType...types) {
