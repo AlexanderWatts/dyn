@@ -14,7 +14,24 @@ public class Parser {
 	}
 
 	public Expr expression() {
-		return comparison();
+		return equality();
+	}
+
+	/**
+	 * Equality grammar production
+	 * equality = comparison (("==" | "!=") comparison)* ;
+	 */
+	private Expr equality() {
+		Expr expr = comparison();
+
+		if (match(TokenType.EQUAL_EQUAL, TokenType.BANG_EQUAL)) {
+			Token operator = getPreviousToken();
+			Expr right = comparison();
+
+			return new Expr.Binary(expr, operator, right);
+		}
+
+		return expr;
 	}
 
 	/**
