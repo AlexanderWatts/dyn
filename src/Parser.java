@@ -14,6 +14,21 @@ public class Parser {
 	}
 
 	public Expr expression() {
+		return unary();
+	}
+
+	/**
+	 * Unary grammar production
+	 * unary = ("-" | "!") unary | primary ;
+	 */
+	private Expr unary() {
+		if (match(TokenType.MINUS, TokenType.BANG)) {
+			Token operator = getPreviousToken();
+			Expr right = unary();
+
+			return new Expr.Unary(operator, right);
+		}
+
 		return primary();
 	}
 
@@ -40,9 +55,6 @@ public class Parser {
 
 		if (match(TokenType.LEFT_PAREN)) {
 			Expr expr = expression();
-
-			System.out.println("current " + getCurrentToken());
-			System.out.println("prev " + getPreviousToken());
 
 			if (!check(TokenType.RIGHT_PAREN)) {
 				throw new Error("Expression missing ')'");	
