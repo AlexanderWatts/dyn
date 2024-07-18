@@ -30,6 +30,10 @@ public class AstPrinter implements Expr.Visitor<String> {
 
 	@Override
 	public String visit(Expr.Literal expr) {
+		if (expr.getValue() == null) {
+			return "nil";
+		}
+
 		return expr
 			.getValue()
 			.toString();
