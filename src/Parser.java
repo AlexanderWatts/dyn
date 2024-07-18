@@ -14,7 +14,24 @@ public class Parser {
 	}
 
 	public Expr expression() {
-		return unary();
+		return factor();
+	}
+
+	/**
+	 * Factor grammar production
+	 * factor = unary (("*" | "/") unary)* ;
+	 */
+	private Expr factor() {
+		Expr expr = unary();
+ 
+		if (match(TokenType.STAR, TokenType.SLASH)) {
+			Token operator = getPreviousToken();
+			Expr right = unary();
+
+			return new Expr.Binary(expr, operator, right);
+		}
+
+		return expr;
 	}
 
 	/**
