@@ -14,7 +14,25 @@ public class Parser {
 	}
 
 	public Expr expression() {
-		return factor();
+		return term();
+	}
+
+	/**
+	 * Term grammar production
+	 * term = factor (("+" | "-") factor)* ;
+	 */
+	private Expr term() {
+		Expr expr = factor();
+
+		if (match(TokenType.PLUS, TokenType.MINUS)) {
+			Token operator = getPreviousToken();
+			Expr right = factor();
+
+			return new Expr.Binary(expr, operator, right);
+		}
+
+		return expr;
+		
 	}
 
 	/**
