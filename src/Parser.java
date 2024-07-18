@@ -14,7 +14,29 @@ public class Parser {
 	}
 
 	public Expr expression() {
-		return term();
+		return comparison();
+	}
+
+	/**
+	 * Comparison grammar production
+	 * comparison = term (("<" | "<=" | ">" | ">=") term)* ;
+	 */
+	private Expr comparison() {
+		Expr expr = term();
+
+		if (match(
+			TokenType.LESS,
+			TokenType.LESS_EQUAL,
+			TokenType.GREATER,
+			TokenType.GREATER_EQUAL
+		)) {
+			Token operator = getPreviousToken();
+			Expr right = term();
+
+			return new Expr.Binary(expr, operator, right);
+		}
+
+		return expr;
 	}
 
 	/**
