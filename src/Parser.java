@@ -9,7 +9,6 @@ public class Parser {
 	}
 
 	public Expr parse() {
-		System.out.println("Parsing...");
 		return expression();
 	}
 
