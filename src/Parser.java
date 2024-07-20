@@ -1,6 +1,10 @@
 import java.util.List;
 
 public class Parser {
+	private static class ParseError extends RuntimeException {
+
+	}
+
 	private final List<Token> tokens;
 	private int current = 0;
 
@@ -134,15 +138,25 @@ public class Parser {
 
 		if (match(TokenType.LEFT_PAREN)) {
 			Expr expr = expression();
-
-			if (!check(TokenType.RIGHT_PAREN)) {
-				throw new Error("Expression missing ')'");	
-			}
+			checkAndAdvance(TokenType.RIGHT_PAREN, "Expected ')' after expression");
 
 			return new Expr.Grouping(expr);
 		}
 		
-		throw new Error("Invalid expression");
+		throw error(getCurrentToken(), "Expression expected");
+	}
+ 
+	private Token checkAndAdvance(TokenType tokenType, String errorMessage) {
+		if (check(tokenType)) {
+			getCurrentTokenAndAdvance();
+		}
+
+		throw error(getCurrentToken(), errorMessage); 
+	}
+
+	private ParseError error(Token token, String errorMessage) {
+		Dyn.error(token, errorMessage);	
+		return new ParseError();
 	}
 
 	private boolean match(TokenType... tokenTypes) {

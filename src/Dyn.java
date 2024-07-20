@@ -69,7 +69,18 @@ public class Dyn {
 		scanner.printTokens();
 		
 		Parser parser = new Parser(tokens);
-		parser.parse();
+		Expr root = parser.parse();
+
+		System.out.println(new AstPrinter().print(root));
+
+	}
+
+	public static void error(Token token, String errorMessage) {
+		if (token.getType() == TokenType.EOF) {
+			report(token.getLine(), " at end", errorMessage);
+		} else {
+			report(token.getLine(), " at '" + token.getLexeme() + "'", errorMessage);
+		}
 	}
 
 	public static void error(int line, String message) {
@@ -77,7 +88,7 @@ public class Dyn {
 	}
 
 	private static void report(int line, String where, String message) {
-		System.err.println("[line " + line + "] Error " + where + ": " + message);
+		System.err.println("[line " + line + "] Error" + where + ": " + message);
 
 		hadError = true;
 	}
