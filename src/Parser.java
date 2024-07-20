@@ -9,6 +9,12 @@ public class Parser {
 	}
 
 	public Expr parse() {
+
+		while (!isAtEnd()) {
+			Expr root = expression();
+			System.out.println(new AstPrinter().print(root));
+		}
+
 		return expression();
 	}
 
@@ -27,7 +33,7 @@ public class Parser {
 			Token operator = getPreviousToken();
 			Expr right = comparison();
 
-			return new Expr.Binary(expr, operator, right);
+			expr = new Expr.Binary(expr, operator, right);
 		}
 
 		return expr;
@@ -49,7 +55,7 @@ public class Parser {
 			Token operator = getPreviousToken();
 			Expr right = term();
 
-			return new Expr.Binary(expr, operator, right);
+			expr = new Expr.Binary(expr, operator, right);
 		}
 
 		return expr;
@@ -66,7 +72,7 @@ public class Parser {
 			Token operator = getPreviousToken();
 			Expr right = factor();
 
-			return new Expr.Binary(expr, operator, right);
+			expr = new Expr.Binary(expr, operator, right);
 		}
 
 		return expr;
@@ -84,7 +90,7 @@ public class Parser {
 			Token operator = getPreviousToken();
 			Expr right = unary();
 
-			return new Expr.Binary(expr, operator, right);
+			expr = new Expr.Binary(expr, operator, right);
 		}
 
 		return expr;
