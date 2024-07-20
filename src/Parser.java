@@ -146,7 +146,7 @@ public class Parser {
  
 	private Token checkAndAdvance(TokenType tokenType, String errorMessage) {
 		if (check(tokenType)) {
-			getCurrentTokenAndAdvance();
+			return getCurrentTokenAndAdvance();
 		}
 
 		throw error(getCurrentToken(), errorMessage); 
