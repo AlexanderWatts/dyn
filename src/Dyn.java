@@ -74,7 +74,10 @@ public class Dyn {
 		System.out.println(new AstPrinter().print(root));
 
 		Interpreter interpreter = new Interpreter();
-		interpreter.evaluate(root);
+		Object output = interpreter.evaluate(root);
+
+		System.out.println("Interpreting...");
+		System.out.println(output);
 	}
 
 	public static void error(Token token, String errorMessage) {

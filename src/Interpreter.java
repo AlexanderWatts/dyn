@@ -12,19 +12,40 @@ public class Interpreter implements Expr.Visitor<Object> {
 
 	@Override
 	public Object visit(Expr.Grouping expr) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'visit'");
+		return evaluate(expr.getExpression());
 	}
 
 	@Override
 	public Object visit(Expr.Unary expr) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'visit'");
+		Object right = evaluate(expr.getRight());
+		
+		switch (expr.getOperator().getType()) {
+			case TokenType.MINUS: {
+				return -(double) right;
+			}
+			case TokenType.BANG: {
+				return !isTruthy(right);
+			}
+		}
+
+		return null;
 	}
 
 	@Override
 	public Object visit(Expr.Literal expr) {
 		return expr.getValue();
+	}
+
+	private boolean isTruthy(Object object) {
+		if (object == null) {
+			return false;
+		}
+
+		if (object instanceof Boolean) {
+			return (boolean)object;
+		}
+
+		return true;
 	}
 
 }
