@@ -13,13 +13,11 @@ public class Parser {
 	}
 
 	public Expr parse() {
-
-		while (!isAtEnd()) {
-			Expr root = expression();
-			System.out.println(new AstPrinter().print(root));
+		try {
+			return expression();
+		} catch (ParseError error) {
+			return null;
 		}
-
-		return expression();
 	}
 
 	public Expr expression() {
