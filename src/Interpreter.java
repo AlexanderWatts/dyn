@@ -1,5 +1,8 @@
 
 public class Interpreter implements Expr.Visitor<Object> {
+	public Object evaluate(Expr root) {
+		return root.accept(this);
+	}
 
 	@Override
 	public Object visit(Expr.Binary expr) {
@@ -21,8 +24,7 @@ public class Interpreter implements Expr.Visitor<Object> {
 
 	@Override
 	public Object visit(Expr.Literal expr) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'visit'");
+		return expr.getValue();
 	}
 
 }

@@ -73,6 +73,8 @@ public class Dyn {
 
 		System.out.println(new AstPrinter().print(root));
 
+		Interpreter interpreter = new Interpreter();
+		interpreter.evaluate(root);
 	}
 
 	public static void error(Token token, String errorMessage) {
