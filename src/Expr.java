@@ -8,10 +8,10 @@ import java.util.List;
 */
 public abstract class Expr {
 	public interface Visitor<R> {
-		public R visit(Expr.Binary expr);
-		public R visit(Expr.Grouping expr);
-		public R visit(Expr.Unary expr);
-		public R visit(Expr.Literal expr);
+		public R visit(Binary expr);
+		public R visit(Grouping expr);
+		public R visit(Unary expr);
+		public R visit(Literal expr);
 	}
 
 	public abstract <R> R accept(Visitor<R> visitor);
@@ -44,6 +44,20 @@ public abstract class Expr {
 			return visitor.visit(this);
 		}
 
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.left);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.operator);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.right);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
 	}
 
 	public static class Grouping extends Expr {
@@ -60,6 +74,16 @@ public abstract class Expr {
 		@Override
 		public <R> R accept(Visitor<R> visitor) {
 			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.expression);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
 		}
 
 	}
@@ -86,6 +110,18 @@ public abstract class Expr {
 			return visitor.visit(this);
 		}
 
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.operator);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.right);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
 	}
 
 	public static class Literal extends Expr {
@@ -102,6 +138,16 @@ public abstract class Expr {
 		@Override
 		public <R> R accept(Visitor<R> visitor) {
 			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.value);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
 		}
 
 	}
