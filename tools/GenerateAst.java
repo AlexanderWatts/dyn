@@ -95,6 +95,23 @@ public class GenerateAst {
 		printWriter.println("		}");
 		printWriter.println();
 
+		printWriter.println("		@Override");
+		printWriter.println("		public String toString() {");
+		printWriter.println("			StringBuilder stringBuilder = new StringBuilder();");
+		printWriter.println();
+
+
+		for (String field : fieldList) {
+			String name = field.split(" ")[1];
+			printWriter.println("			stringBuilder.append(this." + name + ");");
+			printWriter.println("			stringBuilder.append(\" \");");
+		}
+
+		printWriter.println();
+		printWriter.println("			return stringBuilder.toString();");	
+		printWriter.println("		}");
+		printWriter.println();
+
 		printWriter.println("	}");
 	}
 }
