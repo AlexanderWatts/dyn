@@ -7,6 +7,11 @@ The following context-free grammar describes the Dyn language and is used as a g
 the parser. It will be updated and improved as more features are added
 
 ```
+program = statement* EOF ;
+statement = exprStmt | printStmt ;
+exprStmt = expression ";" ;
+printStmt = "print" expression "';" ;
+
 expression = equality ;
 equality = comparison (("==" | "!=") comparison)* ;
 comparison = term (("<" | "<=" | ">" | ">=") term)* ;
