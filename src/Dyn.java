@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class Dyn {
+	private static Interpreter interpreter = new Interpreter();
 	private static boolean hadError = false;
 	private static boolean hadRuntimeError = false;
 
@@ -78,11 +79,8 @@ public class Dyn {
 
 		System.out.println(new AstPrinter().print(root));
 
-		Interpreter interpreter = new Interpreter();
-		Object output = interpreter.evaluate(root);
-
 		System.out.println("Interpreting...");
-		System.out.println(output);
+		interpreter.interpret(root);
 	}
 
 	public static void error(Token token, String errorMessage) {
