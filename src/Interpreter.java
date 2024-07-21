@@ -1,5 +1,15 @@
 
 public class Interpreter implements Expr.Visitor<Object> {
+	public void interpret(Expr expr) {
+		try {
+			Object root = evaluate(expr);
+
+			System.out.println(root.toString());
+		} catch (RuntimeError runtimeError) {
+			Dyn.runtimeError(runtimeError);
+		}
+	}
+
 	public Object evaluate(Expr root) {
 		return root.accept(this);
 	}

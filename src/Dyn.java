@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Dyn {
 	private static boolean hadError = false;
+	private static boolean hadRuntimeError = false;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length > 1) {
@@ -32,6 +33,10 @@ public class Dyn {
 
 		if (hadError) {
 			System.exit(65);
+		}
+
+		if (hadRuntimeError) {
+			System.exit(70);
 		}
 	}
 
@@ -125,5 +130,13 @@ public class Dyn {
 		System.out.println(astPrinter.print(grouping));
 		System.out.println(astPrinter.print(unary));
 	}
+
+    public static void runtimeError(RuntimeError runtimeError) {
+		System.out.println(runtimeError.getMessage() +
+			"\n[line " + runtimeError.getToken().getLine() + "]"
+		);
+
+		hadRuntimeError = true;
+    }
 }
 
