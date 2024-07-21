@@ -44,18 +44,50 @@ public class Interpreter implements Expr.Visitor<Object> {
 				return (double) left / (double) right;
 			}
 			case TokenType.GREATER_EQUAL: {
+				if (left instanceof String && right instanceof Double) {
+					return ((String) left).length() >= (double) right;
+				}
+
+				if (left instanceof Double && right instanceof String) {
+					return (double) left >= ((String) right).length() ;
+				}
+
 				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left >= (double) right;
 			}
 			case TokenType.GREATER: {
+				if (left instanceof String && right instanceof Double) {
+					return ((String) left).length() > (double) right;
+				}
+
+				if (left instanceof Double && right instanceof String) {
+					return (double) left > ((String) right).length() ;
+				}
+
 				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left > (double) right;
 			}
 			case TokenType.LESS: {
+				if (left instanceof String && right instanceof Double) {
+					return ((String) left).length() < (double) right;
+				}
+
+				if (left instanceof Double && right instanceof String) {
+					return (double) left < ((String) right).length() ;
+				}
+
 				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left < (double) right;
 			}
 			case TokenType.LESS_EQUAL: {
+				if (left instanceof String && right instanceof Double) {
+					return ((String) left).length() <= (double) right;
+				}
+
+				if (left instanceof Double && right instanceof String) {
+					return (double) left <= ((String) right).length() ;
+				}
+
 				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left <= (double) right;
 			}
