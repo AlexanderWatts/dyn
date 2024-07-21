@@ -19,27 +19,34 @@ public class Interpreter implements Expr.Visitor<Object> {
 					return (double) left + (double) right;
 				}
 				
-				break;
+				throw new RuntimeError(expr.getOperator(), "Operands must be two numbers or two strings");
 			}
 			case TokenType.MINUS: {
+				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left - (double) right;
 			}
 			case TokenType.STAR: {
+				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left * (double) right;
 			}
 			case TokenType.SLASH: {
+				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left / (double) right;
 			}
 			case TokenType.GREATER_EQUAL: {
+				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left >= (double) right;
 			}
 			case TokenType.GREATER: {
+				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left > (double) right;
 			}
 			case TokenType.LESS: {
+				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left < (double) right;
 			}
 			case TokenType.LESS_EQUAL: {
+				checkNumberOperands(expr.getOperator(), left, right);
 				return (double) left <= (double) right;
 			}
 			case TokenType.EQUAL_EQUAL: {
@@ -64,6 +71,7 @@ public class Interpreter implements Expr.Visitor<Object> {
 		
 		switch (expr.getOperator().getType()) {
 			case TokenType.MINUS: {
+				checkNumberOperand(expr.getOperator(), right);
 				return -(double) right;
 			}
 			case TokenType.BANG: {
@@ -77,6 +85,22 @@ public class Interpreter implements Expr.Visitor<Object> {
 	@Override
 	public Object visit(Expr.Literal expr) {
 		return expr.getValue();
+	}
+
+	private void checkNumberOperands(Token token, Object left, Object right) {
+		if (left instanceof Double && right instanceof Double) {
+			return;
+		}
+
+		throw new RuntimeError(token, "Operands must be numbers");
+	}
+
+	private void checkNumberOperand(Token token, Object operand) {
+		if (operand instanceof Double) {
+			return;
+		}
+
+		throw new RuntimeError(token, "Operand must be a number");
 	}
 
 	private boolean isEqual(Object a, Object b) {
