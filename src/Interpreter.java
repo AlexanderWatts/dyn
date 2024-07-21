@@ -10,7 +10,7 @@ public class Interpreter implements Expr.Visitor<Object> {
 		}
 	}
 
-	public Object evaluate(Expr root) {
+	private Object evaluate(Expr root) {
 		return root.accept(this);
 	}
 
