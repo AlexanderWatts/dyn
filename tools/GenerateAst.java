@@ -10,6 +10,11 @@ public class GenerateAst {
 			"Unary : Token operator, Expr right",
 			"Literal : Object value"
 		));
+
+		defineAst("./src/", "Stmt", Arrays.asList(
+			"Expression : Expr expression",
+			"Print : Expr expression"
+		));
 	}
 
 	private static void defineAst(String outputDir, String baseName, List<String> types) {
