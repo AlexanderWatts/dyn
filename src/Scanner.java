@@ -113,11 +113,9 @@ public class Scanner {
 					addToken(TokenType.NUMBER, number);
 					break;
 				} else if (isAlpha(currentCharacter)) {
-					while (isAlphaNumeric(getNextCharacter())) {
+					while (isAlphaNumeric(getCurrentCharacter())) {
 						getCurrentCharacterAndAdvance();
 					}
-
-					getCurrentCharacterAndAdvance();
 
 					String content = source.substring(start, current);
 					TokenType type = keywords.get(content);
