@@ -12,6 +12,7 @@ public abstract class Expr {
 		public R visit(Grouping expr);
 		public R visit(Unary expr);
 		public R visit(Literal expr);
+		public R visit(Variable expr);
 	}
 
 	public abstract <R> R accept(Visitor<R> visitor);
@@ -145,6 +146,34 @@ public abstract class Expr {
 			StringBuilder stringBuilder = new StringBuilder();
 
 			stringBuilder.append(this.value);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
+
+	public static class Variable extends Expr {
+		private final Token name;
+
+		public Variable(Token name) {
+			this.name = name;
+		}
+
+		public Token getName() {
+			return this.name;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.name);
 			stringBuilder.append(" ");
 
 			return stringBuilder.toString();

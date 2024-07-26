@@ -10,6 +10,7 @@ public abstract class Stmt {
 	public interface Visitor<R> {
 		public R visit(Expression stmt);
 		public R visit(Print stmt);
+		public R visit(Var stmt);
 	}
 
 	public abstract <R> R accept(Visitor<R> visitor);
@@ -63,6 +64,42 @@ public abstract class Stmt {
 			StringBuilder stringBuilder = new StringBuilder();
 
 			stringBuilder.append(this.expression);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
+
+	public static class Var extends Stmt {
+		private final Token name;
+		private final Expr initialiser;
+
+		public Var(Token name, Expr initialiser) {
+			this.name = name;
+			this.initialiser = initialiser;
+		}
+
+		public Token getName() {
+			return this.name;
+		}
+
+		public Expr getInitialiser() {
+			return this.initialiser;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.name);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.initialiser);
 			stringBuilder.append(" ");
 
 			return stringBuilder.toString();
