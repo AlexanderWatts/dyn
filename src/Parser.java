@@ -17,10 +17,31 @@ public class Parser {
 		List<Stmt> statements = new ArrayList<>();
 
 		while (!isAtEnd()) {
-			statements.add(statement());
+			statements.add(declaration());
 		}
 
 		return statements;
+	}
+
+	private Stmt declaration() {
+		if (match(TokenType.VAR)) {
+			return varDecl();
+		}
+
+		return statement();
+	}
+
+	private Stmt varDecl() {
+		Token identifier = checkAndAdvance(TokenType.IDENTIFIER, "Expect variable name");
+
+		Expr initialiser = null;
+
+		if (match(TokenType.EQUAL)) {
+			initialiser = expression();
+		}
+
+		checkAndAdvance(TokenType.SEMICOLON, "Expect ';' after variable declaration");
+		return new Stmt.Var(identifier, initialiser);
 	}
 
 	private Stmt statement() {
@@ -143,6 +164,10 @@ public class Parser {
 	 * primary = STRING | NUMBER | "true" | "false" | "nil" | "(" expression ")" ;
 	 */
 	private Expr primary() {
+		if (match(TokenType.IDENTIFIER)) {
+			return new Expr.Variable(getPreviousToken());
+		}
+
 		if (match(TokenType.STRING, TokenType.NUMBER)) {
 			return new Expr.Literal(getPreviousToken().getLiteral());
 		}
