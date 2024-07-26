@@ -1,6 +1,8 @@
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+	private final Environment environment = new Environment();
+
 	public void interpret(List<Stmt> statements) {
 		try {
 			for (Stmt stmt : statements) {
@@ -17,6 +19,23 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
 	private Object evaluate(Expr root) {
 		return root.accept(this);
+	}
+
+	@Override
+	public Void visit(Stmt.Var stmt) {
+		Object value = null;
+
+		if (stmt.getInitialiser() != null) {
+			value = evaluate(stmt.getInitialiser());
+		}
+
+		environment.define(stmt.getName().getLexeme(), value);
+
+		return null;
+	}
+
+	public Object visit(Expr.Variable stmt) {
+		return environment.get(stmt.getName());
 	}
 
 	@Override
@@ -42,6 +61,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 			case TokenType.PLUS: {
 				if (left instanceof String && right instanceof String) {
 					return (String) left + (String) right;
+				}
+
+				if (left instanceof String && right == null) {
+					return (String) left;
+				}
+
+				if (left == null && right instanceof String) {
+					return (String) right;
 				}
 
 				if (left instanceof Double && right instanceof Double) {
