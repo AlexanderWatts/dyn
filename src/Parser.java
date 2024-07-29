@@ -24,11 +24,16 @@ public class Parser {
 	}
 
 	private Stmt declaration() {
-		if (match(TokenType.VAR)) {
-			return varDecl();
-		}
+		try {
+			if (match(TokenType.VAR)) {
+				return varDecl();
+			}
 
-		return statement();
+			return statement();
+		} catch (ParseError error) {
+			synchronise();
+			return null;
+		}
 	}
 
 	private Stmt varDecl() {
@@ -280,6 +285,30 @@ public class Parser {
 
 	private Token getCurrentToken() {
 		return tokens.get(current);
+	}
+
+	private void synchronise() {
+		getCurrentTokenAndAdvance();
+
+		while (!isAtEnd()) {
+			if (getPreviousToken().getType() == TokenType.SEMICOLON) {
+				return;	
+			}
+
+			switch (getCurrentToken().getType()) {
+				case TokenType.CLASS:
+				case TokenType.FOR:
+				case TokenType.FUN:
+				case TokenType.WHILE:
+				case TokenType.PRINT:
+				case TokenType.VAR:
+				case TokenType.RETURN:
+				case TokenType.IF:
+					return;
+			}
+
+			getCurrentTokenAndAdvance();
+		}
 	}
 }
 
