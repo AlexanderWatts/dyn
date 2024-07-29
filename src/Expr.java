@@ -8,6 +8,7 @@ import java.util.List;
 */
 public abstract class Expr {
 	public interface Visitor<R> {
+		public R visit(Assign expr);
 		public R visit(Binary expr);
 		public R visit(Grouping expr);
 		public R visit(Unary expr);
@@ -16,6 +17,42 @@ public abstract class Expr {
 	}
 
 	public abstract <R> R accept(Visitor<R> visitor);
+
+	public static class Assign extends Expr {
+		private final Token name;
+		private final Expr value;
+
+		public Assign(Token name, Expr value) {
+			this.name = name;
+			this.value = value;
+		}
+
+		public Token getName() {
+			return this.name;
+		}
+
+		public Expr getValue() {
+			return this.value;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.name);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.value);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
 
 	public static class Binary extends Expr {
 		private final Expr left;
