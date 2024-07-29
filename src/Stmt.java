@@ -8,12 +8,41 @@ import java.util.List;
 */
 public abstract class Stmt {
 	public interface Visitor<R> {
+		public R visit(Block stmt);
 		public R visit(Expression stmt);
 		public R visit(Print stmt);
 		public R visit(Var stmt);
 	}
 
 	public abstract <R> R accept(Visitor<R> visitor);
+
+	public static class Block extends Stmt {
+		private final List<Stmt> statements;
+
+		public Block(List<Stmt> statements) {
+			this.statements = statements;
+		}
+
+		public List<Stmt> getStatements() {
+			return this.statements;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.statements);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
 
 	public static class Expression extends Stmt {
 		private final Expr expression;
