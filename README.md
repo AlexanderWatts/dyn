@@ -9,7 +9,8 @@ the parser. It will be updated and improved as more features are added
 ```
 program = declaration* EOF ;
 declaration = statement | varDecl ;
-statement = exprStmt | printStmt ;
+statement = exprStmt | printStmt | block;
+block = "{" declaration* "}" ;
 varDecl = "var" IDENTIFIER ("=" expression)? ";" ;
 exprStmt = expression ";" ;
 printStmt = "print" expression "';" ;
