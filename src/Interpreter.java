@@ -1,17 +1,86 @@
+import java.util.List;
 
-public class Interpreter implements Expr.Visitor<Object> {
-	public void interpret(Expr expr) {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+	private Environment environment = new Environment();
+
+	public void interpret(List<Stmt> statements) {
 		try {
-			Object root = evaluate(expr);
-
-			System.out.println(root.toString());
+			for (Stmt stmt : statements) {
+				execute(stmt);
+			}
 		} catch (RuntimeError runtimeError) {
 			Dyn.runtimeError(runtimeError);
 		}
 	}
 
+	private void execute(Stmt stmt) {
+		stmt.accept(this);
+	}
+
 	private Object evaluate(Expr root) {
 		return root.accept(this);
+	}
+
+	@Override
+	public Void visit(Stmt.Block stmt) {
+		executeBlock(stmt.getStatements(), new Environment(environment));
+		return null;
+	}
+
+	private Void executeBlock(List<Stmt> statements, Environment environment) {
+		Environment previous = this.environment;
+		
+		try {
+			this.environment = environment;
+
+			for (Stmt statement : statements) {
+				execute(statement);	
+			}
+			
+		} finally {
+			this.environment = previous;
+		}
+
+		return null;
+	}
+
+	@Override
+	public Void visit(Stmt.Var stmt) {
+		Object value = null;
+
+		if (stmt.getInitialiser() != null) {
+			value = evaluate(stmt.getInitialiser());
+		}
+
+		environment.define(stmt.getName().getLexeme(), value);
+
+		return null;
+	}
+
+	@Override
+	public Object visit(Expr.Assign expr) {
+		Object value = evaluate(expr.getValue());
+		environment.assign(expr.getName(), value);
+
+		return value;
+	}
+
+	public Object visit(Expr.Variable stmt) {
+		return environment.get(stmt.getName());
+	}
+
+	@Override
+	public Void visit(Stmt.Expression stmt) {
+		evaluate(stmt.getExpression());
+		return null;
+	}
+
+	@Override
+	public Void visit(Stmt.Print stmt) {
+		Object expression = evaluate(stmt.getExpression());
+		System.out.println(generateString(expression));
+
+		return null;
 	}
 
 	@Override
@@ -23,6 +92,14 @@ public class Interpreter implements Expr.Visitor<Object> {
 			case TokenType.PLUS: {
 				if (left instanceof String && right instanceof String) {
 					return (String) left + (String) right;
+				}
+
+				if (left instanceof String && right == null) {
+					return (String) left;
+				}
+
+				if (left == null && right instanceof String) {
+					return (String) right;
 				}
 
 				if (left instanceof Double && right instanceof Double) {
@@ -137,6 +214,14 @@ public class Interpreter implements Expr.Visitor<Object> {
 		throw new RuntimeError(token, "Operands must be numbers");
 	}
 
+	private String generateString(Object object) {
+		if (object == null) {
+			return "nil";
+		}
+
+		return object.toString();
+	}
+
 	private void checkNumberOperand(Token token, Object operand) {
 		if (operand instanceof Double) {
 			return;
@@ -168,6 +253,5 @@ public class Interpreter implements Expr.Visitor<Object> {
 
 		return true;
 	}
-
 }
 

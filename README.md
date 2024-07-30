@@ -7,13 +7,22 @@ The following context-free grammar describes the Dyn language and is used as a g
 the parser. It will be updated and improved as more features are added
 
 ```
-expression = equality ;
+program = declaration* EOF ;
+declaration = statement | varDecl ;
+statement = exprStmt | printStmt | block;
+block = "{" declaration* "}" ;
+varDecl = "var" IDENTIFIER ("=" expression)? ";" ;
+exprStmt = expression ";" ;
+printStmt = "print" expression "';" ;
+
+expression = assignment ;
+assignment = IDENTIFIER "=" assignment | equality ;
 equality = comparison (("==" | "!=") comparison)* ;
 comparison = term (("<" | "<=" | ">" | ">=") term)* ;
 term = factor (("+" | "-") factor)* ;
 factor = unary (("*" | "/") unary)* ;
 unary = ("!" | "-") unary | primary ;
-primary = STRING | NUMBER | "true" | "false" | "nil" | "(" expression ")" ;
+primary = STRING | NUMBER | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER ;
 ```
 
 ## Running dyn

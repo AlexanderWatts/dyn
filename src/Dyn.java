@@ -75,12 +75,15 @@ public class Dyn {
 		scanner.printTokens();
 		
 		Parser parser = new Parser(tokens);
-		Expr root = parser.parse();
+		List<Stmt> statements = parser.parse();
 
-		System.out.println(new AstPrinter().print(root));
+		System.out.println("Statements---");
+		for (Stmt stmt : statements) {
+			System.out.println(stmt);	
+		}
+		System.out.println("---");
 
-		System.out.println("Interpreting...");
-		interpreter.interpret(root);
+		interpreter.interpret(statements);
 	}
 
 	public static void error(Token token, String errorMessage) {
