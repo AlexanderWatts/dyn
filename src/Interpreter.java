@@ -22,6 +22,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
+	public Void visit(Stmt.If stmt) {
+		Object condition = evaluate(stmt.getCondition());
+
+		if (isTruthy(condition)) {
+			execute(stmt.getThenBranch());	
+		} else if (stmt.getElseBranch() != null) {
+			execute(stmt.getElseBranch());	
+		}
+
+		return null;
+	}
+
+	@Override
 	public Void visit(Stmt.Block stmt) {
 		executeBlock(stmt.getStatements(), new Environment(environment));
 		return null;
