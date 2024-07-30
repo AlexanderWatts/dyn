@@ -10,6 +10,7 @@ public abstract class Stmt {
 	public interface Visitor<R> {
 		public R visit(Block stmt);
 		public R visit(Expression stmt);
+		public R visit(If stmt);
 		public R visit(Print stmt);
 		public R visit(Var stmt);
 	}
@@ -65,6 +66,50 @@ public abstract class Stmt {
 			StringBuilder stringBuilder = new StringBuilder();
 
 			stringBuilder.append(this.expression);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
+
+	public static class If extends Stmt {
+		private final Expr condition;
+		private final Stmt thenBranch;
+		private final Stmt elseBranch;
+
+		public If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
+			this.condition = condition;
+			this.thenBranch = thenBranch;
+			this.elseBranch = elseBranch;
+		}
+
+		public Expr getCondition() {
+			return this.condition;
+		}
+
+		public Stmt getThenBranch() {
+			return this.thenBranch;
+		}
+
+		public Stmt getElseBranch() {
+			return this.elseBranch;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.condition);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.thenBranch);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.elseBranch);
 			stringBuilder.append(" ");
 
 			return stringBuilder.toString();
