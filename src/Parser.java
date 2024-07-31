@@ -50,6 +50,10 @@ public class Parser {
 	}
 
 	private Stmt statement() {
+		if (match(TokenType.WHILE)) {
+			return whileStmt();
+		}
+
 		if (match(TokenType.PRINT)) {
 			return printStmt();
 		}
@@ -63,6 +67,16 @@ public class Parser {
 		}
 
 		return exprStmt();
+	}
+
+	private Stmt whileStmt() {
+		checkAndAdvance(TokenType.LEFT_PAREN, "Expect '(' after 'while'");
+		Expr condition = expression();
+		checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after condition");
+		
+		Stmt body = statement();
+
+		return new Stmt.While(condition, body);
 	}
 
 	private Stmt ifStmt() {
