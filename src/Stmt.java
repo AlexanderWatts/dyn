@@ -11,6 +11,7 @@ public abstract class Stmt {
 		public R visit(Block stmt);
 		public R visit(Expression stmt);
 		public R visit(If stmt);
+		public R visit(While stmt);
 		public R visit(Print stmt);
 		public R visit(Var stmt);
 	}
@@ -110,6 +111,42 @@ public abstract class Stmt {
 			stringBuilder.append(this.thenBranch);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.elseBranch);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
+
+	public static class While extends Stmt {
+		private final Expr condition;
+		private final Stmt body;
+
+		public While(Expr condition, Stmt body) {
+			this.condition = condition;
+			this.body = body;
+		}
+
+		public Expr getCondition() {
+			return this.condition;
+		}
+
+		public Stmt getBody() {
+			return this.body;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append(this.condition);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.body);
 			stringBuilder.append(" ");
 
 			return stringBuilder.toString();
