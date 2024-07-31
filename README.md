@@ -17,7 +17,9 @@ exprStmt = expression ";" ;
 printStmt = "print" expression "';" ;
 
 expression = assignment ;
-assignment = IDENTIFIER "=" assignment | equality ;
+assignment = IDENTIFIER "=" assignment | logicOr ;
+logicOr = logicAnd ( "or" loginAnd )* ;
+logicAnd = equality ( "and" equaity )* ;
 equality = comparison (("==" | "!=") comparison)* ;
 comparison = term (("<" | "<=" | ">" | ">=") term)* ;
 term = factor (("+" | "-") factor)* ;
