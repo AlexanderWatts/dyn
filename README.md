@@ -9,8 +9,9 @@ the parser. It will be updated and improved as more features are added
 ```
 program = declaration* EOF ;
 declaration = statement | varDecl ;
-statement = exprStmt | printStmt | block | ifStmt ;
+statement = exprStmt | printStmt | block | ifStmt | whileStmt ;
 ifStmt = "if" "(" expression ")" statement ( "else" statement )? ;
+whileStmt = "while" "(" expression ")" statement ;
 block = "{" declaration* "}" ;
 varDecl = "var" IDENTIFIER ("=" expression)? ";" ;
 exprStmt = expression ";" ;
