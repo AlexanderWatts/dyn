@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Parser {
@@ -54,6 +55,10 @@ public class Parser {
 			return whileStmt();
 		}
 
+		if (match(TokenType.FOR)) {
+			return forStmt();
+		}
+
 		if (match(TokenType.PRINT)) {
 			return printStmt();
 		}
@@ -67,6 +72,54 @@ public class Parser {
 		}
 
 		return exprStmt();
+	}
+
+	private Stmt forStmt() {
+		checkAndAdvance(TokenType.LEFT_PAREN, "Expect '(' after 'for'");
+		
+		Stmt initialiser;
+
+		if (match(TokenType.SEMICOLON)) {
+			initialiser = null;
+		} else if (match(TokenType.VAR)) {
+			initialiser = varDecl();
+		} else {
+			initialiser = exprStmt();
+		}
+
+		Expr condition = null;
+
+		if (!check(TokenType.SEMICOLON)) {
+			condition = expression();	
+		}
+
+		checkAndAdvance(TokenType.SEMICOLON, "Expect ';' after for condition");
+
+		Expr increment = null;
+
+		if (!check(TokenType.RIGHT_PAREN)) {
+			increment = expression();	
+		}
+
+		checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after for clauses");
+
+		Stmt body = statement();
+
+		if (increment != null) {
+			body = new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
+		}
+
+		if (condition == null) {
+			condition = new Expr.Literal(true);
+		}
+
+		body = new Stmt.While(condition, body);
+
+		if (initialiser != null) {
+			body = new Stmt.Block(Arrays.asList(initialiser, body));
+		}
+
+		return body;
 	}
 
 	private Stmt whileStmt() {
