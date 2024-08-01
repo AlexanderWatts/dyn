@@ -38,6 +38,7 @@ public abstract class Stmt {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Stmt Block ");
 			stringBuilder.append(this.statements);
 			stringBuilder.append(" ");
 
@@ -66,6 +67,7 @@ public abstract class Stmt {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Stmt Expression ");
 			stringBuilder.append(this.expression);
 			stringBuilder.append(" ");
 
@@ -106,6 +108,7 @@ public abstract class Stmt {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Stmt If ");
 			stringBuilder.append(this.condition);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.thenBranch);
@@ -144,6 +147,7 @@ public abstract class Stmt {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Stmt While ");
 			stringBuilder.append(this.condition);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.body);
@@ -174,6 +178,7 @@ public abstract class Stmt {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Stmt Print ");
 			stringBuilder.append(this.expression);
 			stringBuilder.append(" ");
 
@@ -208,6 +213,7 @@ public abstract class Stmt {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Stmt Var ");
 			stringBuilder.append(this.name);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.initialiser);

@@ -112,6 +112,7 @@ public class GenerateAst {
 		printWriter.println("			StringBuilder stringBuilder = new StringBuilder();");
 		printWriter.println();
 
+		printWriter.println("			stringBuilder.append(\"" + baseName + " " + className + " " + "\");");
 
 		for (String field : fieldList) {
 			String name = field.split(" ")[1];
