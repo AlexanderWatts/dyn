@@ -22,6 +22,28 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
+	public Void visit(Stmt.If stmt) {
+		Object condition = evaluate(stmt.getCondition());
+
+		if (isTruthy(condition)) {
+			execute(stmt.getThenBranch());	
+		} else if (stmt.getElseBranch() != null) {
+			execute(stmt.getElseBranch());	
+		}
+
+		return null;
+	}
+
+	@Override
+	public Void visit(Stmt.While stmt) {
+		while (isTruthy(evaluate(stmt.getCondition()))) {
+			execute(stmt.getBody());
+		}
+
+		return null;
+	}
+
+	@Override
 	public Void visit(Stmt.Block stmt) {
 		executeBlock(stmt.getStatements(), new Environment(environment));
 		return null;
@@ -199,6 +221,24 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		}
 
 		return null;
+	}
+
+
+	@Override
+	public Object visit(Expr.Logical expr) {
+		Object left = evaluate(expr.getLeft());
+
+		if (expr.getOperator().getType() == TokenType.OR) {
+			if (isTruthy(left)) {
+				return left;
+			}
+		} else {
+			if (!isTruthy(left)) {
+				return left;
+			}
+		}
+
+		return evaluate(expr.getRight());
 	}
 
 	@Override

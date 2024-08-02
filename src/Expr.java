@@ -12,6 +12,7 @@ public abstract class Expr {
 		public R visit(Binary expr);
 		public R visit(Grouping expr);
 		public R visit(Unary expr);
+		public R visit(Logical expr);
 		public R visit(Literal expr);
 		public R visit(Variable expr);
 	}
@@ -44,6 +45,7 @@ public abstract class Expr {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Expr Assign ");
 			stringBuilder.append(this.name);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.value);
@@ -86,6 +88,7 @@ public abstract class Expr {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Expr Binary ");
 			stringBuilder.append(this.left);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.operator);
@@ -118,6 +121,7 @@ public abstract class Expr {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Expr Grouping ");
 			stringBuilder.append(this.expression);
 			stringBuilder.append(" ");
 
@@ -152,6 +156,52 @@ public abstract class Expr {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Expr Unary ");
+			stringBuilder.append(this.operator);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.right);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
+
+	public static class Logical extends Expr {
+		private final Expr left;
+		private final Token operator;
+		private final Expr right;
+
+		public Logical(Expr left, Token operator, Expr right) {
+			this.left = left;
+			this.operator = operator;
+			this.right = right;
+		}
+
+		public Expr getLeft() {
+			return this.left;
+		}
+
+		public Token getOperator() {
+			return this.operator;
+		}
+
+		public Expr getRight() {
+			return this.right;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append("Expr Logical ");
+			stringBuilder.append(this.left);
+			stringBuilder.append(" ");
 			stringBuilder.append(this.operator);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.right);
@@ -182,6 +232,7 @@ public abstract class Expr {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Expr Literal ");
 			stringBuilder.append(this.value);
 			stringBuilder.append(" ");
 
@@ -210,6 +261,7 @@ public abstract class Expr {
 		public String toString() {
 			StringBuilder stringBuilder = new StringBuilder();
 
+			stringBuilder.append("Expr Variable ");
 			stringBuilder.append(this.name);
 			stringBuilder.append(" ");
 

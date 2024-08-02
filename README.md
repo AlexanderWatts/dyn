@@ -9,14 +9,19 @@ the parser. It will be updated and improved as more features are added
 ```
 program = declaration* EOF ;
 declaration = statement | varDecl ;
-statement = exprStmt | printStmt | block;
+statement = exprStmt | printStmt | block | ifStmt | whileStmt | forStmt ;
+forStmt = "for" "(" ( varDecl | exprStmt | ";" ) ";" expression? ";" expression? ";" ")" statment ;
+ifStmt = "if" "(" expression ")" statement ( "else" statement )? ;
+whileStmt = "while" "(" expression ")" statement ;
 block = "{" declaration* "}" ;
 varDecl = "var" IDENTIFIER ("=" expression)? ";" ;
 exprStmt = expression ";" ;
 printStmt = "print" expression "';" ;
 
 expression = assignment ;
-assignment = IDENTIFIER "=" assignment | equality ;
+assignment = IDENTIFIER "=" assignment | logicOr ;
+logicOr = logicAnd ( "or" loginAnd )* ;
+logicAnd = equality ( "and" equaity )* ;
 equality = comparison (("==" | "!=") comparison)* ;
 comparison = term (("<" | "<=" | ">" | ">=") term)* ;
 term = factor (("+" | "-") factor)* ;

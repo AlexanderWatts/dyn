@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Parser {
@@ -50,8 +51,20 @@ public class Parser {
 	}
 
 	private Stmt statement() {
+		if (match(TokenType.WHILE)) {
+			return whileStmt();
+		}
+
+		if (match(TokenType.FOR)) {
+			return forStmt();
+		}
+
 		if (match(TokenType.PRINT)) {
 			return printStmt();
+		}
+
+		if (match(TokenType.IF)) {
+			return ifStmt();
 		}
 
 		if (match(TokenType.LEFT_BRACE)) {
@@ -59,6 +72,79 @@ public class Parser {
 		}
 
 		return exprStmt();
+	}
+
+	private Stmt forStmt() {
+		checkAndAdvance(TokenType.LEFT_PAREN, "Expect '(' after 'for'");
+		
+		Stmt initialiser;
+
+		if (match(TokenType.SEMICOLON)) {
+			initialiser = null;
+		} else if (match(TokenType.VAR)) {
+			initialiser = varDecl();
+		} else {
+			initialiser = exprStmt();
+		}
+
+		Expr condition = null;
+
+		if (!check(TokenType.SEMICOLON)) {
+			condition = expression();	
+		}
+
+		checkAndAdvance(TokenType.SEMICOLON, "Expect ';' after for condition");
+
+		Expr increment = null;
+
+		if (!check(TokenType.RIGHT_PAREN)) {
+			increment = expression();	
+		}
+
+		checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after for clauses");
+
+		Stmt body = statement();
+
+		if (increment != null) {
+			body = new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
+		}
+
+		if (condition == null) {
+			condition = new Expr.Literal(true);
+		}
+
+		body = new Stmt.While(condition, body);
+
+		if (initialiser != null) {
+			body = new Stmt.Block(Arrays.asList(initialiser, body));
+		}
+
+		return body;
+	}
+
+	private Stmt whileStmt() {
+		checkAndAdvance(TokenType.LEFT_PAREN, "Expect '(' after 'while'");
+		Expr condition = expression();
+		checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after condition");
+		
+		Stmt body = statement();
+
+		return new Stmt.While(condition, body);
+	}
+
+	private Stmt ifStmt() {
+		checkAndAdvance(TokenType.LEFT_PAREN, "Expect '(' after 'if'");
+		Expr condition = expression();
+		checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after condition");
+
+		Stmt thenBranch = statement();
+		Stmt elseBranch = null;
+
+		if (match(TokenType.ELSE)) {
+			elseBranch = statement();
+		}
+
+		return new Stmt.If(condition, thenBranch, elseBranch);
 	}
 
 	private List<Stmt> block() {
@@ -92,7 +178,7 @@ public class Parser {
 	}
 
 	private Expr assignment() {
-		Expr expr = equality();
+		Expr expr = logicOr();
 
 		if (match(TokenType.EQUAL)) {
 			Token operator = getPreviousToken();
@@ -107,6 +193,30 @@ public class Parser {
 		}
 
 		return expr;
+	}
+
+	private Expr logicOr() {
+		Expr expr = logicAnd();
+
+		while (match(TokenType.OR)) {
+			Token operator = getPreviousToken();
+			Expr right = logicAnd();
+			expr = new Expr.Logical(expr, operator, right);
+		}
+
+		return expr;
+	}
+
+	private Expr logicAnd() {
+		Expr expr = equality();
+
+		while(match(TokenType.AND)) {
+			Token operator = getPreviousToken();
+			Expr right = equality();
+			expr = new Expr.Logical(expr, operator, right);
+		}
+
+		return expr; 
 	}
 
 	/**
