@@ -30,11 +30,39 @@ public class Parser {
 				return varDecl();
 			}
 
+			if (match(TokenType.FUN)) {
+				return funcDecl("function");
+			}
+
 			return statement();
 		} catch (ParseError error) {
 			synchronise();
 			return null;
 		}
+	}
+
+	private Stmt funcDecl(String kind) {
+		Token name = checkAndAdvance(TokenType.IDENTIFIER, "Expect " + kind + " name");
+		
+		checkAndAdvance(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name");
+		List<Token> params = new ArrayList<>();
+
+		if (!check(TokenType.RIGHT_PAREN)) {
+			do {
+				if (params.size() >= 255) {
+					error(getCurrentToken(), "Cannot have more than 255 parameters");
+				}
+
+				params.add(checkAndAdvance(TokenType.IDENTIFIER, "Expect parameter name"));
+			} while (match(TokenType.COMMA));
+		}
+
+		checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after " + kind + " name");
+
+		checkAndAdvance(TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body");
+		List<Stmt> body = block();
+
+		return new Stmt.Function(name, params, body);
 	}
 
 	private Stmt varDecl() {
