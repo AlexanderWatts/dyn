@@ -8,7 +8,10 @@ the parser. It will be updated and improved as more features are added
 
 ```
 program = declaration* EOF ;
-declaration = statement | varDecl ;
+declaration = statement | varDecl | funcDecl ;
+funcDecl = "fun" function ;
+function = IDENTIFIER "(" parameters? ")" block ;
+parameters = IDENTIFIER ( "," IDENTIFIER )* ;
 statement = exprStmt | printStmt | block | ifStmt | whileStmt | forStmt ;
 forStmt = "for" "(" ( varDecl | exprStmt | ";" ) ";" expression? ";" expression? ";" ")" statment ;
 ifStmt = "if" "(" expression ")" statement ( "else" statement )? ;
