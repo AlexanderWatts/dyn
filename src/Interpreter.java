@@ -26,6 +26,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		});	
 	}
 
+	@Override
+	public Void visit(Stmt.Function stmt) {
+		DynCallable function = new DynFunction(stmt);
+		environment.define(stmt.getName().getLexeme(), function);
+
+		return null;
+	}
+
 	public void interpret(List<Stmt> statements) {
 		try {
 			for (Stmt stmt : statements) {
@@ -72,7 +80,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		return null;
 	}
 
-	private Void executeBlock(List<Stmt> statements, Environment environment) {
+	public Void executeBlock(List<Stmt> statements, Environment environment) {
 		Environment previous = this.environment;
 		
 		try {
@@ -338,6 +346,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		}
 
 		return true;
+	}
+
+	public Environment getGlobals() {
+		return this.globals;
 	}
 }
 
