@@ -14,6 +14,7 @@ public abstract class Stmt {
 		public R visit(If stmt);
 		public R visit(While stmt);
 		public R visit(Print stmt);
+		public R visit(Return stmt);
 		public R visit(Var stmt);
 	}
 
@@ -225,6 +226,43 @@ public abstract class Stmt {
 			StringBuilder stringBuilder = new StringBuilder();
 
 			stringBuilder.append("Stmt Print ");
+			stringBuilder.append(this.expression);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
+
+	public static class Return extends Stmt {
+		private final Token keyword;
+		private final Expr expression;
+
+		public Return(Token keyword, Expr expression) {
+			this.keyword = keyword;
+			this.expression = expression;
+		}
+
+		public Token getKeyword() {
+			return this.keyword;
+		}
+
+		public Expr getExpression() {
+			return this.expression;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append("Stmt Return ");
+			stringBuilder.append(this.keyword);
+			stringBuilder.append(" ");
 			stringBuilder.append(this.expression);
 			stringBuilder.append(" ");
 
