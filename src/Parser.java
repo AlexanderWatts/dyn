@@ -95,11 +95,27 @@ public class Parser {
 			return ifStmt();
 		}
 
+		if (match(TokenType.RETURN)) {
+			return returnStmt();	
+		}
+
 		if (match(TokenType.LEFT_BRACE)) {
 			return new Stmt.Block(block());
 		}
 
 		return exprStmt();
+	}
+
+	private Stmt returnStmt() {
+		Token keyword = getPreviousToken();
+		Expr value = null;
+		
+		if (!check(TokenType.SEMICOLON)) {
+			value = expression();
+		}
+
+		checkAndAdvance(TokenType.SEMICOLON, "Expect ';' after return value");
+		return new Stmt.Return(keyword, value);
 	}
 
 	private Stmt forStmt() {
