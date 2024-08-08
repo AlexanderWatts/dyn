@@ -1,7 +1,38 @@
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-	private Environment environment = new Environment();
+	private final Environment globals = new Environment();
+	private Environment environment = globals; 
+
+	public Interpreter() {
+		globals.define("clock", new DynCallable() {
+
+			@Override
+			public int arity() {
+				return 0;
+			}
+
+			@Override
+			public Object call(Interpreter interpreter, List<Object> arguments) {
+				return (double) System.currentTimeMillis() / 1000;
+			}
+
+			@Override
+			public String toString() {
+				return "<native fn>";	
+			}
+		});	
+	}
+
+	@Override
+	public Void visit(Stmt.Function stmt) {
+		DynCallable function = new DynFunction(stmt);
+		environment.define(stmt.getName().getLexeme(), function);
+
+		return null;
+	}
 
 	public void interpret(List<Stmt> statements) {
 		try {
@@ -19,6 +50,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
 	private Object evaluate(Expr root) {
 		return root.accept(this);
+	}
+
+	@Override
+	public Void visit(Stmt.Return stmt) {
+		Object value = null;
+
+		if (stmt.getExpression() != null) {
+			value = evaluate(stmt.getExpression());
+		}
+
+		throw new Return(value);
 	}
 
 	@Override
@@ -49,7 +91,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		return null;
 	}
 
-	private Void executeBlock(List<Stmt> statements, Environment environment) {
+	public Void executeBlock(List<Stmt> statements, Environment environment) {
 		Environment previous = this.environment;
 		
 		try {
@@ -223,6 +265,29 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		return null;
 	}
 
+	@Override
+	public Object visit(Expr.Call expr) {
+		Object callee = evaluate(expr.getCallee());
+
+		List<Object> arguments = new ArrayList<>();
+
+		for (Expr argument : expr.getArguments()) {
+			arguments.add(evaluate(argument));
+		}
+
+		if (!(callee instanceof DynCallable)) {
+			throw new RuntimeError(expr.getParen(), "Can only call functions and classes");
+		}
+
+		DynCallable function = (DynCallable) callee;
+
+		if (arguments.size() != function.arity()) {
+			throw new RuntimeError(expr.getParen(), "Expected " + function.arity() + " arguments but got " +
+				arguments.size());
+		}
+
+		return function.call(this, arguments);
+	}
 
 	@Override
 	public Object visit(Expr.Logical expr) {
@@ -292,6 +357,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		}
 
 		return true;
+	}
+
+	public Environment getGlobals() {
+		return this.globals;
 	}
 }
 

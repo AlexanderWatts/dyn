@@ -8,8 +8,12 @@ the parser. It will be updated and improved as more features are added
 
 ```
 program = declaration* EOF ;
-declaration = statement | varDecl ;
-statement = exprStmt | printStmt | block | ifStmt | whileStmt | forStmt ;
+declaration = statement | varDecl | funcDecl ;
+funcDecl = "fun" function ;
+function = IDENTIFIER "(" parameters? ")" block ;
+parameters = IDENTIFIER ( "," IDENTIFIER )* ;
+statement = exprStmt | printStmt | block | ifStmt | whileStmt | forStmt | returnStmt ;
+returnStmt = "return" expression? ";" ;
 forStmt = "for" "(" ( varDecl | exprStmt | ";" ) ";" expression? ";" expression? ";" ")" statment ;
 ifStmt = "if" "(" expression ")" statement ( "else" statement )? ;
 whileStmt = "while" "(" expression ")" statement ;
@@ -26,7 +30,9 @@ equality = comparison (("==" | "!=") comparison)* ;
 comparison = term (("<" | "<=" | ">" | ">=") term)* ;
 term = factor (("+" | "-") factor)* ;
 factor = unary (("*" | "/") unary)* ;
-unary = ("!" | "-") unary | primary ;
+unary = ("!" | "-") unary | call ;
+call = primary ( "(" arguments? ")" )* ;
+arguments = expression ( "," expression )* ;
 primary = STRING | NUMBER | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER ;
 ```
 

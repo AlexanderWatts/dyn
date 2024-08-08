@@ -30,11 +30,39 @@ public class Parser {
 				return varDecl();
 			}
 
+			if (match(TokenType.FUN)) {
+				return funcDecl("function");
+			}
+
 			return statement();
 		} catch (ParseError error) {
 			synchronise();
 			return null;
 		}
+	}
+
+	private Stmt funcDecl(String kind) {
+		Token name = checkAndAdvance(TokenType.IDENTIFIER, "Expect " + kind + " name");
+		
+		checkAndAdvance(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name");
+		List<Token> params = new ArrayList<>();
+
+		if (!check(TokenType.RIGHT_PAREN)) {
+			do {
+				if (params.size() >= 255) {
+					error(getCurrentToken(), "Cannot have more than 255 parameters");
+				}
+
+				params.add(checkAndAdvance(TokenType.IDENTIFIER, "Expect parameter name"));
+			} while (match(TokenType.COMMA));
+		}
+
+		checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after " + kind + " name");
+
+		checkAndAdvance(TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body");
+		List<Stmt> body = block();
+
+		return new Stmt.Function(name, params, body);
 	}
 
 	private Stmt varDecl() {
@@ -67,11 +95,27 @@ public class Parser {
 			return ifStmt();
 		}
 
+		if (match(TokenType.RETURN)) {
+			return returnStmt();	
+		}
+
 		if (match(TokenType.LEFT_BRACE)) {
 			return new Stmt.Block(block());
 		}
 
 		return exprStmt();
+	}
+
+	private Stmt returnStmt() {
+		Token keyword = getPreviousToken();
+		Expr value = null;
+		
+		if (!check(TokenType.SEMICOLON)) {
+			value = expression();
+		}
+
+		checkAndAdvance(TokenType.SEMICOLON, "Expect ';' after return value");
+		return new Stmt.Return(keyword, value);
 	}
 
 	private Stmt forStmt() {
@@ -305,7 +349,39 @@ public class Parser {
 			return new Expr.Unary(operator, right);
 		}
 
-		return primary();
+		return call();
+	}
+
+	private Expr call() {
+		Expr expr = primary();
+
+		while (true) {
+			if (match(TokenType.LEFT_PAREN)) {
+				expr = arguments(expr);
+			} else {
+				break;
+			}
+		}
+		
+		return expr;
+	}
+
+	private Expr arguments(Expr callee) {
+		List<Expr> arguments = new ArrayList<>();
+
+		if (!check(TokenType.RIGHT_PAREN)) {
+			do {
+				if (arguments.size() >= 255) {
+					error(getCurrentToken(), "Cannot have more than 255 arguments");
+				}
+
+				arguments.add(expression());
+			} while (match(TokenType.COMMA));
+		}
+
+		Token paren = checkAndAdvance(TokenType.RIGHT_PAREN, "Expect ')' after arguments");
+
+		return new Expr.Call(callee, paren, arguments);
 	}
 
 	/**

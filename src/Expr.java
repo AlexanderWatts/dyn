@@ -12,6 +12,7 @@ public abstract class Expr {
 		public R visit(Binary expr);
 		public R visit(Grouping expr);
 		public R visit(Unary expr);
+		public R visit(Call expr);
 		public R visit(Logical expr);
 		public R visit(Literal expr);
 		public R visit(Variable expr);
@@ -160,6 +161,51 @@ public abstract class Expr {
 			stringBuilder.append(this.operator);
 			stringBuilder.append(" ");
 			stringBuilder.append(this.right);
+			stringBuilder.append(" ");
+
+			return stringBuilder.toString();
+		}
+
+	}
+
+	public static class Call extends Expr {
+		private final Expr callee;
+		private final Token paren;
+		private final List<Expr> arguments;
+
+		public Call(Expr callee, Token paren, List<Expr> arguments) {
+			this.callee = callee;
+			this.paren = paren;
+			this.arguments = arguments;
+		}
+
+		public Expr getCallee() {
+			return this.callee;
+		}
+
+		public Token getParen() {
+			return this.paren;
+		}
+
+		public List<Expr> getArguments() {
+			return this.arguments;
+		}
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visit(this);
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder stringBuilder = new StringBuilder();
+
+			stringBuilder.append("Expr Call ");
+			stringBuilder.append(this.callee);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.paren);
+			stringBuilder.append(" ");
+			stringBuilder.append(this.arguments);
 			stringBuilder.append(" ");
 
 			return stringBuilder.toString();
