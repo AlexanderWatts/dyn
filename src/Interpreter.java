@@ -53,6 +53,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
+	public Void visit(Stmt.Return stmt) {
+		Object value = null;
+
+		if (stmt.getExpression() != null) {
+			value = evaluate(stmt.getExpression());
+		}
+
+		throw new Return(value);
+	}
+
+	@Override
 	public Void visit(Stmt.If stmt) {
 		Object condition = evaluate(stmt.getCondition());
 
