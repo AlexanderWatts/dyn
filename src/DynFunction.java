@@ -20,9 +20,12 @@ public class DynFunction implements DynCallable {
 			enviroment.define(declaration.getParams().get(i).getLexeme(), arguments.get(i));	
 		}
 
-		System.out.println("Env " + enviroment.getValues());
+		try {
+			interpreter.executeBlock(declaration.getBody(), enviroment);
+		} catch (Return returnValue) {
+			return returnValue.getValue();
+		}
 
-		interpreter.executeBlock(declaration.getBody(), enviroment);
 		return null;
 	}
 
