@@ -72,16 +72,8 @@ public class Dyn {
 		Scanner scanner = new Scanner(source);
 		List<Token> tokens = scanner.scan();
 
-		scanner.printTokens();
-		
 		Parser parser = new Parser(tokens);
 		List<Stmt> statements = parser.parse();
-
-		System.out.println("Statements---");
-		for (Stmt stmt : statements) {
-			System.out.println(stmt);	
-		}
-		System.out.println("---");
 
 		interpreter.interpret(statements);
 	}
